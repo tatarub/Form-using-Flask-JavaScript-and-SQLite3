@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>form</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function(event) {
+                $.ajax({
+                    data : {
+                        firstName : $('#firstName').val(),
+                        lastName: $('#lastName').val(),
+                        id : $('#id').val(),
+                        grade: $('#grade').val(),
+                            },
+                        type : 'POST',
+                        url : '/process'
+                    });
+                $('#firstName').val('');
+                $('#lastName').val('');
+                $('#id').val('');
+                $('#grade').val('')
+                return false;
+            });
+
+            $('#getInfo').click(function(event) {
+                $.ajax({
+                    data : {id : $('#studentId').val(),},
+                    type : 'GET',
+                    url : '/proc',
+                    success: function(data) {
+                        $('#output').text("Student Id: " + data.id + " First Name: " + data.firstName + " Last Name: " + data.lastName + " Student Grade: " + data.grade);
+                        $('#output').show();
+                    },
+                    error: function(httpError) {
+                            if (httpError.status == 404) {
+                                $('#output').text("No student found");
+                            } else {
+                                $('#output').text("Some error occured");
+                            }
+                            $('#output').show();
+                        }
+                });
+                event.preventDefault();
+                return false;
+            });
+        });
+        </script>
+</head>
+<body>
+
+<form class="form-inline">
+
+    <div class="form-group">
+    <label class="sr-only" for="firstName">First Name</label>
+    <input type="text" class="form-control" id="firstName" placeholder="First Name">
+    </div>
+
+    <div class="form-group">
+    <label class="sr-only" for="lastName">Last Name</label>
+    <input type="text" class="form-control" id="lastName" placeholder="Last Name">
+    </div>
+
+    <div class="form-group">
+        <label class="sr-only" for="id">Student Id</label>
+        <input type="text" class="form-control" id="id" placeholder="Student Id">
+    </div>
+
+     <div class="form-group">
+            <label class="sr-only" for="grade">Student Grade</label>
+            <input type="text" class="form-control" id="grade" placeholder="Student Grade">
+    </div>
+
+    <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+    <form class="form-inline">
+        <div class="form-group">
+            <label class="sr-only" for="studentId">Retrive info</label>
+            <input type="text" class="form-control" id="studentId" placeholder="Enter id">
+    </div>
+    <button id="getInfo" type="submit" class="btn btn-default">Get info</button>
+    <div id="output" style="display: none;"></div>
+</form>
+
+</body>
+</html>
